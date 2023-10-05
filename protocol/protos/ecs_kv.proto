@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package ecs_kv;
+
+// The request and response messages for register/shutdown
+message RegisterRequest {
+  string socket_addr = 1;
+}
+
+message RegisterResponse {
+  string updated_network_topology = 1;
+}
+
+message ShutdownRequest {
+  string socket_addr = 1;
+}
+
+message ShutdownResponse {
+  string updated_network_topology = 1;
+}
+
+// The request and response messages for completion of register (=1)/shutdown (=0)
+message TransferCompletionRequest {}
+
+message TransferCompletionResponse {
+  bool accepted = 1;
+}
+
+service ECSKV {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Shutdown(ShutdownRequest) returns (ShutdownResponse);
+  // the client (kv_server) will wait until the flooding of metadata has been
+  // propagated into the whole network
+  rpc TransferCompletion(TransferCompletionRequest) returns (TransferCompletionResponse);
+}

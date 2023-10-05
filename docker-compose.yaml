@@ -1,0 +1,124 @@
+version: "3.7"
+services:
+  kv-server-1:
+    container_name: kv-server-1
+    image: gitlab.lrz.de
+    command:
+      -l kvserver1.log -ll ALL -d data/kvstore1/ -a kv-server-1 -n node1 -b
+      kv-server-1:5144
+    environment:
+      - RUST_LOG
+    networks:
+      - kv_network
+    ports:
+      - 5551:5551 # client port
+    expose:
+      - 5551:5551 # client port
+      - 5144:5144 # membership_kv port
+      - 5145:5145 # kv_membership port
+      - 5146:5146 # kv port
+      - 5147:5147 # gossip port
+
+  kv-server-2:
+    container_name: kv-server-2
+    image: gitlab.lrz.de
+    command:
+      -l kvserver2.log -ll ALL -d data/kvstore2/ -a kv-server-2 -n node2 -y
+      kv-server-1 -x 5147 -b kv-server-2:5144
+    environment:
+      - RUST_LOG
+    networks:
+      - kv_network
+    ports:
+      - 5552:5551 # client port
+    expose:
+      - 5551:5551 # client port
+      - 5144:5144 # membership_kv port
+      - 5145:5145 # kv_membership port
+      - 5146:5146 # kv port
+      - 5147:5147 # gossip port
+    depends_on:
+      - kv-server-1
+
+  kv-server-3:
+    container_name: kv-server-3
+    image: gitlab.lrz.de
+    command:
+      -l kvserver3.log -ll ALL -d data/kvstore3/ -a kv-server-3 -n node3 -y
+      kv-server-1 -x 5147 -b kv-server-3:5144
+    environment:
+      - RUST_LOG
+    networks:
+      - kv_network
+    ports:
+      - 5553:5551 # client port
+    expose:
+      - 5551:5551 # client port
+      - 5144:5144 # membership_kv port
+      - 5145:5145 # kv_membership port
+      - 5146:5146 # kv port
+      - 5147:5147 # gossip port
+    depends_on:
+      - kv-server-1
+
+  kv-server-4:
+    container_name: kv-server-4
+    image: gitlab.lrz.de
+    command:
+      -l kvserver4.log -ll ALL -d data/kvstore4/ -a kv-server-4 -n node4 -y
+      kv-server-1 -x 5147 -b kv-server-4:5144
+    environment:
+      - RUST_LOG
+    networks:
+      - kv_network
+    ports:
+      - 5554:5551 # client port
+    expose:
+      - 5551:5551 # client port
+      - 5144:5144 # membership_kv port
+      - 5145:5145 # kv_membership port
+      - 5146:5146 # kv port
+      - 5147:5147 # gossip port
+    depends_on:
+      - kv-server-1
+
+  kv-server-5:
+    container_name: kv-server-5
+    image: gitlab.lrz.de
+    command:
+      -l kvserver5.log -ll ALL -d data/kvstore5/ -a kv-server-5 -n node5 -y
+      kv-server-1 -x 5147 -b kv-server-5:5144
+    environment:
+      - RUST_LOG
+    networks:
+      - kv_network
+    ports:
+      - 5555:5551 # client port
+    expose:
+      - 5551:5551 # client port
+      - 5144:5144 # membership_kv port
+      - 5145:5145 # kv_membership port
+      - 5146:5146 # kv port
+      - 5147:5147 # gossip port
+    depends_on:
+      - kv-server-1
+
+  client:
+    container_name: client
+    image: gitlab.lrz.de
+    command: --address kv-server-1 --port 5551
+    environment:
+      - RUST_LOG
+    stdin_open: true
+    tty: true
+    networks:
+      - kv_network
+    depends_on:
+      - kv-server-1
+      - kv-server-2
+      - kv-server-3
+      - kv-server-4
+      - kv-server-5
+
+networks:
+  kv_network:

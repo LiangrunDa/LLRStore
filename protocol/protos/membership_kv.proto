@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package membership_kv;
+
+message RegisterRequest {
+  string socket_addr = 1;
+  string peer_addr = 2; // empty if this is the first node, 127.0.0.1:8080
+}
+
+message RegisterResponse {
+  string updated_network_topology = 1;
+}
+
+service MembershipKV {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+}

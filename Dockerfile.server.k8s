@@ -1,0 +1,14 @@
+FROM rust:latest as builder
+RUN apt-get update && \
+    apt-get install -y protobuf-compiler
+WORKDIR /app
+COPY . .
+RUN cargo build --workspace --release --bin kv_server & \
+    cargo build --workspace --release --bin membership
+
+FROM debian:bullseye
+WORKDIR /app
+COPY --from=builder /app/target/release/kv_server .
+COPY --from=builder /app/target/release/membership .
+COPY --from=builder /app/run-server-k8s.sh .
+ENTRYPOINT ["./run-server-k8s.sh"]

@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package kv_membership;
+
+message UpdateTopologyRequest {
+  string updated_network_topology = 1;
+}
+
+message UpdateTopologyResponse {}
+
+service KVMembership {
+  // Both RPCs have same params and return type, matching is done according to network topology
+  rpc UpdateTopology(UpdateTopologyRequest) returns (UpdateTopologyResponse);
+}

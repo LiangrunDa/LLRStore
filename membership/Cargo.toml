@@ -1,0 +1,17 @@
+[package]
+name = "membership"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+memberlist = { path = "../memberlist" }
+tokio = { version = "1.28.0", features = ["full"] }
+tonic = "0.9.2"
+protocol = { path = "../protocol" }
+clap = { version = "4.2.5", features = ["derive"] }
+shared = { path = "../shared" }
+tracing = "0.1.37"
+tracing-appender = "0.2.2"
+tracing-subscriber = "0.3.17"

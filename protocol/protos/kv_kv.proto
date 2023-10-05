@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package kv_kv;
+
+message KeyRange {
+  // from is inclusive
+  string from = 1;
+  // to is exclusive
+  string to = 2;
+}
+
+// represents a key-value pair
+message KeyDvvsPair {
+  string key = 1;
+  bytes dvvs = 2;
+}
+
+message KeyDvvsPairs {
+  repeated KeyDvvsPair key_dvvs_pairs = 1;
+}
+
+message PushKeyRangeResponse {}
+
+message ClientRequest {
+  bytes request = 1; // is a bincode serialized StoreCommand
+}
+
+message ForwardRequestResponse {
+  bytes response = 1; // is a bincode serialized DvvSet
+}
+
+// garbage
+
+message Key {
+  string key = 1;
+}
+
+message DeleteKeyResponse {}
+
+message SetWriteLockRequest {
+  // locked = true => acquire write lock
+  // locked = false => release write lock
+  bool locked = 1;
+}
+
+message SetWriteLockResponse {
+  // locked = true => acquired write lock
+  // locked = false => released write lock
+  bool locked = 1;
+}
+
+service KVKV {
+  rpc PullKeyRange(KeyRange) returns (KeyDvvsPairs);
+  rpc PushKeyRange(KeyDvvsPairs) returns (PushKeyRangeResponse);
+  rpc ForwardRequest(ClientRequest) returns (ForwardRequestResponse);
+
+  // garbage
+  rpc SetWriteLock(SetWriteLockRequest) returns (SetWriteLockResponse);
+  rpc DeleteKey(Key) returns (DeleteKeyResponse);
+}
