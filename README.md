@@ -1,7 +1,15 @@
 # LLRStore
 
-LLRStore is contained within this monorepo. It is set up as a Rust
-workspace. Here is a brief overview of the structure:
+LLRStore is contained within this monorepo. It is a distributed key-value store using Dynamo style replication and gossip based membership protocol.
+
+It is developed by Leo Steven and Robert Frank and Me for the course "Cloud Database System" at TUM.
+
+- We implemented Dotted Version Vectors for conflict resolution.
+- We implemented CRDT-based gossip protocol for membership management.
+- We implemented a CLI for interacting with the cluster.
+- We implemented storage engine using [Bitcask](https://arpitbhayani.me/blogs/bitcask)
+
+It is set up as a Rust workspace. Here is a brief overview of the structure:
 
 ```
 client/       # cli client
